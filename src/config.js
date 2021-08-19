@@ -1,4 +1,4 @@
-const ghToken = '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'
+const ghToken = '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'
 const PRIVATE_KEY = 'olma'
 const host = 'localhost'
 const PORT = process.env.PORT || 4200
