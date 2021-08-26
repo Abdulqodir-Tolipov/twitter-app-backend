@@ -9,10 +9,10 @@
     },
     {
         "user_id": 2,
-        "username": "nodir",
+        "username": "Nodir",
         "password": "1111rreQ$",
-        "age": 20,
-        "contact": "998934517685",
+        "age": 60,
+        "contact": "998998515138",
         "gender": 1
     },
     {
@@ -30,5 +30,13 @@
         "contact": "998941049914",
         "gender": "1",
         "password": "1111Aa#kio"
+    },
+    {
+        "user_id": 5,
+        "username": "Abdulqodirrrr",
+        "age": 20,
+        "contact": "998998515138",
+        "gender": 1,
+        "password": "1111AAx@@"
     }
 ]

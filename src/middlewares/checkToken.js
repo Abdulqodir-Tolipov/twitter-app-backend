@@ -2,7 +2,8 @@ import JWT from '../lib/jwt.js'
 
 export default function (req, res, next) {
 	try {
-		if(req.url == '/regsiter' || req.url == '/login') return next()
+		if(req.url == '/register' || req.url == '/login') return next()
+		if(!req.headers.token) throw 'token required'
 		let { token } = req.headers
 		let { userId } = JWT.verify(token)
 		req.userId = userId

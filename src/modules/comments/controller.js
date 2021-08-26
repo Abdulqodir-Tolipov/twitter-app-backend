@@ -1,45 +1,45 @@
-import { posts, post } from './model.js'
+import { comments, comment} from './model.js'
 import JWT from '../../lib/jwt.js'
 import { read, write } from '../../lib/orm.js'
 
-const postsController = (req, res) => {
+const commentsController = (req, res) => {
 	try {
-		// console.log(req.query)
-		res.status(200).json( posts(req.query) )
+		res.status(200).json( comments(req.query) )
 	} catch (error) {
 		console.log(error)
 	}
 }
 
-const postController = (req, res) => {
+const commentController = (req, res) => {
 	try {
 		// console.log(req.params);
-		res.status(200).json( post(req.params) )
+		res.status(200).json( comment(req.params) )
 	} catch (error) {
 		console.log(error)
 	}
 }
 
-const addPost = (req, res) => {
+const addComment = (req, res) => {
 	try{ 
 		if (!req.headers.token) throw "The token required!"
 		let payload = JWT.verify(req.headers.token)
-		let { post_title, post_body} = req.body
-		let posts = read("posts")
-		let newPost = {
-			post_id: posts.length ? posts[posts.length-1].post_id + 1 : 1,
-			post_title: post_title,
-			post_body: post_body,
-			post_created_at: new Date(),
-			user_id: payload.userId
+		let { comment_body, post_id} = req.body
+		let comments = read("comments")
+		let newComment = {
+			comment_id: comments.length ? comments[comments.length-1].comment_id + 1 : 1,
+			comment_body: comment_body,
+			comment_created_at: new Date(),
+			user_id: payload.userId,
+			post_id: post_id
 		}
-		posts.push(newPost)
-		write("posts", posts)
+		comments.push(newComment)
+		if(write("comments", comments)){
 		res.writeHead(201, { 'Content-Type': 'application/json'})
 		res.write(
-			JSON.stringify({ status: 201, message: 'post is posted'})
+			JSON.stringify({ status: 201, message: 'comment is writed'})
 		)
 		return res.end()
+		}
 	}catch (error) {
 		res.writeHead(500, { 'Content-Type': 'application/json'})
 		res.write(
@@ -51,18 +51,20 @@ const addPost = (req, res) => {
 }
 
 
-const putPost = (req, res) => {
+const putComment = (req, res) => {
 	try{
 		if (!req.headers.token) throw 'The token required'
 		let payload = JWT.verify(req.headers.token)
-		let { post_id, post_title, post_body } = req.body
-		let posts = read("posts")
-		const editPost = posts.find(el => el.user_id == payload.userId && el.post_id == post_id)
-		if (editPost){
-			if (post_title) editPost.post_title = post_title
-			if (post_body) editPost.post_body = post_body
+		let { comment_id, comment_body } = req.body
+		// console.log(req.body);
+		let comments = read("comments")
+		// console.log(comments);
+		const editComment = comments.find(el => el.user_id == payload.userId && el.comment_id == comment_id)
+		console.log(editComment);
+		if (editComment){
+			if (comment_body) editComment.comment_body = comment_body
 		}
-		write("posts", posts)
+		write("comments", comments) 
 		res.writeHead(201, {'Content-Type': 'application/json'})
 		res.write(
 			JSON.stringify({status: 201, message: 'post is update!'})
@@ -80,17 +82,18 @@ const putPost = (req, res) => {
 
 
 
-const deletePost = (req, res) => {
+const deleteComment = (req, res) => {
 	try{
 		if (!req.headers.token) throw 'The token required!'
 		let payload = JWT.verify(req.headers.token)
-		let { post_id } = req.body
-		let posts = read("posts")
-		let index = posts.findIndex(val => val.user_id == payload.userId && val.post_id == post_id)
+		let { comment_id } = req.body
+		let comments = read("comments")
+		console.log(comments);
+		let index = comments.findIndex(val => val.user_id == payload.userId && val.comment_id == comment_id)
 		if (index > -1) {
-			posts.splice(index, 1)
+			comments.splice(index, 1)
 		}
-		write("posts", posts)
+		write("comments", comments)
 		res.writeHead(200, { "Content-Type": "application/json" });
 		res.write(
 		  JSON.stringify({
@@ -110,9 +113,9 @@ const deletePost = (req, res) => {
 }
 
 export {
-	postsController,
-	postController,
-	addPost,
-	putPost,
-	deletePost
+	commentsController,
+	commentController,
+	addComment,
+	putComment,
+	deleteComment
 }
